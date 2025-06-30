@@ -1,0 +1,29 @@
+name: V20 Daily Email Scan
+
+on:
+  schedule:
+    - cron: '30 2 * * *'   # 02:30 UTC = 08:00 IST
+  workflow_dispatch:
+
+jobs:
+  v20-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout repo
+      uses: actions/checkout@v4
+
+    - name: 🐍 Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.11
+
+    - name: 📦 Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: 🚀 Run V20 Script
+      env:
+        EMAIL_ADDRESS:  ${{ secrets.EMAIL_ADDRESS }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        TO_EMAILS:      ${{ secrets.TO_EMAILS }}
+      run: python v20_with_email_multi.py
